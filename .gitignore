@@ -1,0 +1,8 @@
+# Dependencies & Build artifacts
+.DS_Store
+.vercel
+*.log
+
+# Large raw source images (production-ready assets are inside assets/images/)
+Herobanner.png
+Logo Gia Viet - Original.png
