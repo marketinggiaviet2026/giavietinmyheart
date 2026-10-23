@@ -16,33 +16,61 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ===================================================================
-   1. LIVE COUNTDOWN TIMER (Opening Registration Date: 21/10)
+   1. LIVE COUNTDOWN TIMER ("Thời gian nhận sản phẩm dự thi")
+   - Bắt đầu nhận bài: 29/10/2026
+   - Đóng cổng bình chọn & nhận bài: 23:59 ngày 20/11/2026
    =================================================================== */
 function initCountdown() {
   const daysEl = document.getElementById('daysVal');
   const hoursEl = document.getElementById('hoursVal');
   const minutesEl = document.getElementById('minutesVal');
   const secondsEl = document.getElementById('secondsVal');
+  const titleEl = document.querySelector('.countdown-title');
+  const subEl = document.querySelector('.countdown-sub');
+  const pillEl = document.querySelector('.countdown-date-pill');
 
   if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
-  // Target: 21 October 08:00:00
   const now = new Date();
-  let targetYear = now.getFullYear();
-  let targetDate = new Date(targetYear, 9, 21, 8, 0, 0); // Month is 0-indexed: 9 = October
+  const targetYear = 2026;
 
-  // If already past this year's 21/10, target next year or keep active
-  if (now > targetDate) {
-    // If within competition range (21/10 to 30/11), show active countdown to next milestone (29/10 nộp bài or 20/11 đóng bình chọn)
-    const subCloseDate = new Date(targetYear, 10, 20, 23, 59, 59); // 20/11
-    if (now < subCloseDate) {
-      targetDate = subCloseDate;
-      const tag = document.querySelector('.countdown-tag');
-      const title = document.querySelector('.countdown-title');
-      if (tag) tag.innerHTML = '<i class="fa-solid fa-stopwatch"></i> Thời điểm đóng bình chọn';
-      if (title) title.textContent = 'Đếm ngược đóng bình chọn (20/11)';
-    } else {
-      targetDate = new Date(targetYear + 1, 9, 21, 8, 0, 0);
+  // Milestone 1: Bắt đầu nộp sản phẩm dự thi (29/10/2026 00:00:00)
+  // (Month is 0-indexed: 9 = October, 10 = November)
+  const submitStartDate = new Date(targetYear, 9, 29, 0, 0, 0);
+
+  // Milestone 2: Đóng cổng bình chọn & nhận bài (20/11/2026 23:59:59)
+  const closeVoteDate = new Date(targetYear, 10, 20, 23, 59, 59);
+
+  let targetDate;
+  if (now < submitStartDate) {
+    // Đang đếm ngược đến ngày bắt đầu nộp bài (29/10/2026)
+    targetDate = submitStartDate;
+    if (titleEl) {
+      titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
+    }
+    if (pillEl) {
+      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Bắt đầu nộp bài: 29/10';
+    }
+    if (subEl) {
+      subEl.innerHTML = 'Thời gian bắt đầu nộp sản phẩm dự thi: <strong>29/10/2026</strong>. Cổng bình chọn sẽ chính thức đóng vào lúc <strong>23:59 ngày 20/11/2026</strong>!';
+    }
+  } else if (now < closeVoteDate) {
+    // Đang trong thời gian nộp bài, đếm ngược đến lúc đóng cổng bình chọn (20/11/2026 23:59:59)
+    targetDate = closeVoteDate;
+    if (titleEl) {
+      titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
+    }
+    if (pillEl) {
+      pillEl.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Đóng cổng bình chọn: 23:59 ngày 20/11';
+    }
+    if (subEl) {
+      subEl.innerHTML = 'Cổng nhận sản phẩm và bình chọn đang mở! Hạn chót đóng cổng lúc <strong>23:59 ngày 20/11/2026</strong>.';
+    }
+  } else {
+    // Đã kết thúc
+    targetDate = now;
+    if (titleEl) {
+      titleEl.innerHTML = '<i class="fa-solid fa-flag-checkered countdown-title-icon"></i> ĐÃ ĐÓNG CỔNG BÌNH CHỌN & NHẬN BÀI';
     }
   }
 
@@ -121,7 +149,7 @@ function initMobileMenu() {
 }
 
 /* ===================================================================
-   4. INTERACTIVE CLASS LOOKUP & AUTO-DETECT BOARD
+   4. INTERACTIVE CLASS LOOKUP & AUTO-DETECT BOARD (Kids, Teens+ADU, Staff)
    =================================================================== */
 function initClassLookup() {
   const input = document.getElementById('classLookupInput');
@@ -134,37 +162,82 @@ function initClassLookup() {
     const raw = text.trim().toLowerCase();
     if (!raw) return null;
 
-    // Normalize
-    const isFirstFriends = raw.includes('first friends') || raw.includes('ff 1') || raw.includes('ff1');
-    const isFamilyFriends = raw.includes('family') || raw.includes('f&f') || raw.includes('fnf');
+    // 1. Kiểm tra Giáo viên & Nhân viên
+    if (raw.includes('giáo viên') || raw.includes('giao vien') || raw.includes('nhân viên') ||
+        raw.includes('nhan vien') || raw.includes('teacher') || raw.includes('staff') ||
+        raw.includes('gv') || raw.includes('nv') || raw.includes('cán bộ') || raw.includes('can bo')) {
+      return {
+        board: 'Staff',
+        name: 'BẢNG TEACHER & STAFF',
+        note: 'Dành riêng cho Giáo viên & Nhân viên Hệ thống Anh ngữ Gia Việt'
+      };
+    }
+
+    // 2. Normalize and check Teens + ADU (EFT-Foundation 1 đến IELTS, Global Teens, FF 4-6)
+    const isEftFoundation = raw.includes('eft') || raw.includes('foundation');
+    const isIelts = raw.includes('ielts');
+    const isToeic = raw.includes('toeic');
+    const isAdult = raw.includes('adu') || raw.includes('adult') || raw.includes('giao tiếp') || raw.includes('giao tiep');
     const isGlobalTeens = raw.includes('global') || raw.includes('teens') || raw.includes('gt');
 
-    if (isFirstFriends) {
-      return { board: 'Kids', name: 'BẢNG KIDS', note: 'Từ First Friends 1A → Family & Friends 3C' };
+    if (isEftFoundation || isIelts || isToeic || isAdult || isGlobalTeens) {
+      return {
+        board: 'Teens',
+        name: 'BẢNG TEENS + ADU',
+        note: 'Học viên các lớp từ EFT-Foundation 1 đến lớp IELTS'
+      };
     }
 
+    // 3. Family & Friends checks
+    const isFamilyFriends = raw.includes('family') || raw.includes('f&f') || raw.includes('fnf') || raw.includes('ff');
     if (isFamilyFriends) {
-      // Check level 1, 2, 3 => Kids; 4, 5, 6 => Teens
-      if (raw.match(/1[a-c]|2[a-c]|3[a-c]|ff1|ff2|ff3|lớp 1|lớp 2|lớp 3/)) {
-        return { board: 'Kids', name: 'BẢNG KIDS', note: 'Từ First Friends 1A → Family & Friends 3C' };
+      // Check 4, 5, 6 => Teens + ADU
+      if (raw.match(/4[a-c]|5[a-c]|6[a-c]|ff4|ff5|ff6|lớp 4|lớp 5|lớp 6|level 4|level 5|level 6/)) {
+        return {
+          board: 'Teens',
+          name: 'BẢNG TEENS + ADU',
+          note: 'Học viên các lớp từ EFT-Foundation 1 đến lớp IELTS'
+        };
       }
-      if (raw.match(/4[a-c]|5[a-c]|6[a-c]|ff4|ff5|ff6|lớp 4|lớp 5|lớp 6/)) {
-        return { board: 'Teens', name: 'BẢNG TEENS', note: 'Từ Family & Friends 4A → Global Teens 4B' };
+      // Check 1, 2, 3 => Kids
+      if (raw.match(/1[a-c]|2[a-c]|3[a-c]|ff1|ff2|ff3|lớp 1|lớp 2|lớp 3|level 1|level 2|level 3/)) {
+        return {
+          board: 'Kids',
+          name: 'BẢNG KIDS',
+          note: 'Từ First Friends 1A → Family & Friends 3C'
+        };
       }
-      // If just generic Family & Friends without level, prompt user
-      return { board: 'Kids', name: 'BẢNG KIDS hoặc BẢNG TEENS', note: 'Cấp độ 1–3 thuộc bảng Kids, cấp độ 4 trở lên thuộc bảng Teens' };
+      return {
+        board: 'Kids',
+        name: 'BẢNG KIDS hoặc BẢNG TEENS + ADU',
+        note: 'Cấp độ 1–3 thuộc bảng Kids, cấp độ 4 trở lên thuộc bảng Teens + ADU'
+      };
     }
 
-    if (isGlobalTeens) {
-      return { board: 'Teens', name: 'BẢNG TEENS', note: 'Từ Family & Friends 4A → Global Teens 4B' };
+    // 4. First Friends checks
+    const isFirstFriends = raw.includes('first friends') || raw.includes('first');
+    if (isFirstFriends) {
+      return {
+        board: 'Kids',
+        name: 'BẢNG KIDS',
+        note: 'Từ First Friends 1A → Family & Friends 3C'
+      };
     }
 
-    // Default heuristics based on numbers
+    // Default heuristics based on keywords
     if (raw.includes('kid') || raw.includes('mầm non') || raw.includes('tiểu học')) {
-      return { board: 'Kids', name: 'BẢNG KIDS', note: 'Phù hợp lứa tuổi Nhi đồng & Tiểu học' };
+      return {
+        board: 'Kids',
+        name: 'BẢNG KIDS',
+        note: 'Phù hợp lứa tuổi Nhi đồng & Tiểu học'
+      };
     }
 
-    return { board: 'Unknown', name: 'Cần xác nhận', note: 'Vui lòng liên hệ quầy tư vấn hoặc hotline 0292.3831.000 để được xếp bảng chuẩn xác nhất!' };
+    return {
+      board: 'Unknown',
+      name: 'Cần xác nhận',
+      note: 'Vui lòng liên hệ quầy tư vấn hoặc hotline 0292.3831.000 để được xếp bảng chuẩn xác nhất!'
+    };
   }
 
   function handleCheck() {
@@ -174,17 +247,23 @@ function initClassLookup() {
     if (!res) {
       resultBox.style.display = 'flex';
       resultBox.className = 'checker-result-box unknown';
-      resultBox.innerHTML = '<i class="fa-solid fa-circle-info"></i> Ba mẹ hãy nhập tên lớp hoặc khóa con đang học (ví dụ: Family & Friends 2A, Global Teens 1...)';
+      resultBox.innerHTML = '<i class="fa-solid fa-circle-info"></i> Quý phụ huynh hoặc Thầy Cô hãy nhập tên lớp/khóa học hoặc chức danh (ví dụ: Family & Friends 2A, IELTS 5.5, Giáo viên...)';
       return;
     }
 
     resultBox.style.display = 'flex';
     if (res.board === 'Kids') {
       resultBox.className = 'checker-result-box kids';
-      resultBox.innerHTML = `<i class="fa-solid fa-child-reaching" style="font-size: 1.3rem;"></i> <div>Lớp <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Kids cho con nhé!</div>`;
+      resultBox.innerHTML = `<i class="fa-solid fa-child-reaching" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Kids nhé!</div>`;
     } else if (res.board === 'Teens') {
       resultBox.className = 'checker-result-box teens';
-      resultBox.innerHTML = `<i class="fa-solid fa-user-graduate" style="font-size: 1.3rem;"></i> <div>Lớp <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Teens cho con nhé!</div>`;
+      resultBox.innerHTML = `<i class="fa-solid fa-user-graduate" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Teens + ADU nhé!</div>`;
+    } else if (res.board === 'Staff') {
+      resultBox.className = 'checker-result-box teens';
+      resultBox.style.borderColor = '#c4b5fd';
+      resultBox.style.background = '#f5f3ff';
+      resultBox.style.color = '#6b21a8';
+      resultBox.innerHTML = `<i class="fa-solid fa-chalkboard-user" style="font-size: 1.3rem; color: #7c3aed;"></i> <div>Đội ngũ <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Chào mừng Thầy Cô & Anh Chị tham gia!</div>`;
     } else {
       resultBox.className = 'checker-result-box unknown';
       resultBox.innerHTML = `<i class="fa-solid fa-circle-question" style="font-size: 1.3rem;"></i> <div>${res.note}</div>`;

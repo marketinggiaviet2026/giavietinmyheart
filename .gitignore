@@ -6,3 +6,4 @@
 # Large raw source images (production-ready assets are inside assets/images/)
 Herobanner.png
 Logo Gia Viet - Original.png
+.env*
