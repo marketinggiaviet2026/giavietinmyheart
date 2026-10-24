@@ -3677,9 +3677,9 @@ p {
   margin-top: auto;
   background: #fff1f2;
   border-top: 2px solid #fecdd3;
-  padding: 16px 18px;
+  padding: 16px 20px;
   display: grid;
-  grid-template-columns: 34% 14% 52%;
+  grid-template-columns: 29% 19% 52%;
   align-items: center;
   min-height: 98px;
   box-sizing: border-box;
@@ -3694,8 +3694,8 @@ p {
   background: #ffe4e6;
   color: #e11d48;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
   display: inline-block;
   font-size: 0.82rem;
   white-space: nowrap;
@@ -3709,12 +3709,15 @@ p {
   font-size: 0.92rem;
   text-align: center;
   white-space: nowrap;
+  padding: 0 8px;
 }
 
 .penalty-col-desc {
   font-size: 0.88rem;
   color: #be123c;
   line-height: 1.45;
+  padding-left: 20px;
+  border-left: 1.5px solid rgba(254, 205, 211, 0.85);
 }
 
 .penalty-col-desc ul {
@@ -3964,6 +3967,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 36px;
   box-shadow: 0 16px 36px rgba(30, 58, 138, 0.25);
   margin-top: 36px;
   position: relative;
@@ -3986,6 +3990,9 @@ p {
   display: flex;
   align-items: center;
   gap: 22px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 20px;
 }
 
 .participant-icon-circle {
@@ -4013,27 +4020,29 @@ p {
 .participant-text p {
   font-size: 0.98rem;
   color: rgba(255, 255, 255, 0.9);
-  max-width: 600px;
-  line-height: 1.5;
+  max-width: 380px;
+  line-height: 1.55;
   margin: 0;
 }
 
 .participant-perks {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .participant-perk-badge {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 1.5px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 18px;
-  border-radius: 16px;
+  padding: 10px 18px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   white-space: nowrap;
 }
 
@@ -4125,6 +4134,26 @@ p {
 
   .reg-action-hub-grid {
     grid-template-columns: 1fr;
+  }
+
+  .participant-banner-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 26px 24px;
+  }
+
+  .participant-left {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .participant-text p {
+    max-width: 100%;
+  }
+
+  .participant-perks {
+    width: 100%;
   }
 
   .footer-top-row {
@@ -4277,6 +4306,12 @@ p {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .participant-text p {
+    max-width: 100%;
   }
 
   .participant-perks {
@@ -4288,6 +4323,7 @@ p {
   .participant-perk-badge {
     width: 100%;
     justify-content: flex-start;
+    white-space: normal;
   }
 
   .perks-grid {
