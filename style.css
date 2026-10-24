@@ -3523,6 +3523,7 @@ p {
   grid-template-columns: 1fr 1fr;
   gap: 28px;
   margin-bottom: 38px;
+  align-items: stretch;
 }
 
 .criteria-table-card {
@@ -3533,6 +3534,7 @@ p {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .criteria-table-card.product { border-color: #fbcfe8; }
@@ -3543,6 +3545,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .criteria-table-card.product .criteria-table-head {
@@ -3574,9 +3577,21 @@ p {
   backdrop-filter: blur(6px);
 }
 
+.criteria-table-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .criteria-table {
   width: 100%;
+  height: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.criteria-table thead {
+  flex-shrink: 0;
 }
 
 .criteria-table th {
@@ -3591,11 +3606,20 @@ p {
   text-align: left;
 }
 
+.criteria-table tbody {
+  display: table-row-group;
+  height: 100%;
+}
+
+.criteria-table tbody tr {
+  height: 25%;
+}
+
 .criteria-table td {
   padding: 14px 18px;
   font-size: 0.91rem;
   border-bottom: 1px solid #f1f5f9;
-  vertical-align: top;
+  vertical-align: middle;
   color: #1e293b;
   line-height: 1.55;
 }
@@ -3644,23 +3668,74 @@ p {
   font-weight: bold;
 }
 
-.criteria-penalty-row {
-  background: #fff1f2 !important;
+/* Criteria Penalty Footer (Cố định ở đáy thẻ, cân bằng 100% thẳng hàng) */
+.criteria-penalty-footer {
+  margin-top: auto;
+  background: #fff1f2;
+  border-top: 2px solid #fecdd3;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 30% 18% 52%;
+  align-items: center;
+  min-height: 98px;
+  box-sizing: border-box;
 }
 
-.criteria-penalty-row td {
-  color: #be123c !important;
+.penalty-col-badge {
+  display: flex;
+  align-items: center;
 }
 
 .criteria-penalty-badge {
   background: #ffe4e6;
   color: #e11d48;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 6px;
   display: inline-block;
   font-size: 0.82rem;
   white-space: nowrap;
+  border: 1px solid #fecdd3;
+}
+
+.penalty-col-weight {
+  color: #e11d48;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 800;
+  font-size: 0.92rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.penalty-col-desc {
+  font-size: 0.88rem;
+  color: #be123c;
+  line-height: 1.45;
+}
+
+.penalty-col-desc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.penalty-col-desc li {
+  position: relative;
+  padding-left: 14px;
+  margin-bottom: 3px;
+  color: #be123c;
+}
+
+.penalty-col-desc li:last-child {
+  margin-bottom: 0;
+}
+
+.penalty-col-desc li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #e11d48;
+  font-weight: bold;
 }
 
 /* 4-Tier Main Prizes Grid */
