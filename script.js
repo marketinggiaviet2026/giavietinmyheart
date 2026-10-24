@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   initQuickActions();
   initFaq();
+  initFaqTable();
 });
 
 /* ===================================================================
@@ -658,6 +659,113 @@ function initFaq() {
         searchInput.focus();
       }
       applyFilterAndSearch();
+    });
+  }
+}
+
+/* ===================================================================
+   11. FAQ MODERN INTERACTIVE TABLE ("Bảng Tra Cứu Hỏi Đáp")
+   =================================================================== */
+function initFaqTable() {
+  const table = document.getElementById('faqModernTable');
+  if (!table) return;
+
+  const rows = table.querySelectorAll('.faq-table-row');
+  const tabs = document.querySelectorAll('#faqTableTabs .faq-tab-pill');
+  const searchInput = document.getElementById('faqTableSearchInput');
+  const searchClear = document.getElementById('faqTableSearchClear');
+  const statusBadge = document.getElementById('faqTableStatus');
+  const emptyState = document.getElementById('faqTableEmpty');
+  const printBtn = document.getElementById('btnPrintFaqTable');
+
+  let activeCategory = 'all';
+
+  function removeVietnameseTones(str) {
+    if (!str) return '';
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase();
+  }
+
+  function applyFilter() {
+    const rawQuery = (searchInput?.value || '').trim();
+    const query = removeVietnameseTones(rawQuery);
+
+    if (searchClear) {
+      searchClear.style.display = rawQuery.length > 0 ? 'block' : 'none';
+    }
+
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const rowCat = row.getAttribute('data-category');
+      const matchesCat = (activeCategory === 'all' || rowCat === activeCategory);
+
+      if (!matchesCat) {
+        row.classList.add('hidden');
+        return;
+      }
+
+      if (!query) {
+        row.classList.remove('hidden');
+        visibleCount++;
+        return;
+      }
+
+      const qText = removeVietnameseTones(row.querySelector('.question-text')?.textContent || '');
+      const aText = removeVietnameseTones(row.querySelector('.answer-box')?.textContent || '');
+      const sttText = row.getAttribute('data-stt') || '';
+
+      if (qText.includes(query) || aText.includes(query) || sttText === query) {
+        row.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+
+    if (statusBadge) {
+      statusBadge.innerHTML = `<i class="fa-solid fa-list-check"></i> Hiển thị: <strong>${visibleCount}</strong> / 28 câu`;
+    }
+
+    if (emptyState) {
+      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+  }
+
+  // Tab click
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCategory = tab.getAttribute('data-filter') || 'all';
+      applyFilter();
+    });
+  });
+
+  // Search input
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilter);
+  }
+
+  // Clear button
+  if (searchClear) {
+    searchClear.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      applyFilter();
+    });
+  }
+
+  // Print button
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      window.print();
     });
   }
 }
