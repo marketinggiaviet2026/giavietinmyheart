@@ -500,32 +500,27 @@ function initQuickActions() {
    10. FAQ / Q&A CARDS INTERACTION ("Giải đáp thắc mắc")
    =================================================================== */
 function initFaq() {
-  const cards = document.querySelectorAll('.faq-card');
+  const cards = document.querySelectorAll('.faq-card-simple, .faq-card');
   const toggleAllBtn = document.getElementById('faqToggleAllBtn');
   const toggleAllText = document.getElementById('faqToggleAllText');
   const searchInput = document.getElementById('faqSearchInput');
   const searchClear = document.getElementById('faqSearchClear');
-  const filterPills = document.querySelectorAll('#faqFilterPills .faq-filter-pill');
+  const filterPills = document.querySelectorAll('#faqFilterPills button');
   const countStatus = document.getElementById('faqCountStatus');
   const noResults = document.getElementById('faqNoResults');
 
   if (!cards.length) return;
 
-  // Mở sẵn 2 câu đầu tiên để người dùng dễ khám phá
+  // Mở sẵn câu đầu tiên để người dùng thấy tương tác
   if (cards[0]) {
     cards[0].classList.add('open');
-    const h0 = cards[0].querySelector('.faq-card-header');
+    const h0 = cards[0].querySelector('.faq-header-simple, .faq-card-header');
     if (h0) h0.setAttribute('aria-expanded', 'true');
-  }
-  if (cards[1]) {
-    cards[1].classList.add('open');
-    const h1 = cards[1].querySelector('.faq-card-header');
-    if (h1) h1.setAttribute('aria-expanded', 'true');
   }
 
   // Sự kiện bấm mở/đóng từng thẻ câu hỏi
   cards.forEach(card => {
-    const header = card.querySelector('.faq-card-header');
+    const header = card.querySelector('.faq-header-simple, .faq-card-header');
     if (!header) return;
 
     header.addEventListener('click', () => {
@@ -547,11 +542,11 @@ function initFaq() {
     if (!visibleCards.length) return;
     const allOpen = visibleCards.every(c => c.classList.contains('open'));
     if (allOpen) {
-      toggleAllText.textContent = 'Thu gọn tất cả';
+      toggleAllText.textContent = 'Thu gọn';
       const icon = toggleAllBtn.querySelector('i');
       if (icon) icon.className = 'fa-solid fa-chevron-up';
     } else {
-      toggleAllText.textContent = 'Mở tất cả câu hỏi';
+      toggleAllText.textContent = 'Mở tất cả';
       const icon = toggleAllBtn.querySelector('i');
       if (icon) icon.className = 'fa-solid fa-chevron-down';
     }
@@ -563,7 +558,7 @@ function initFaq() {
       const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none');
       const allOpen = visibleCards.every(c => c.classList.contains('open'));
       visibleCards.forEach(c => {
-        const header = c.querySelector('.faq-card-header');
+        const header = c.querySelector('.faq-header-simple, .faq-card-header');
         if (allOpen) {
           c.classList.remove('open');
           if (header) header.setAttribute('aria-expanded', 'false');
@@ -578,7 +573,7 @@ function initFaq() {
 
   let activeCategory = 'all';
 
-  // Bộ lọc danh mục (Pills)
+  // Bộ lọc danh mục (Tabs)
   filterPills.forEach(pill => {
     pill.addEventListener('click', () => {
       filterPills.forEach(p => p.classList.remove('active'));
@@ -622,8 +617,8 @@ function initFaq() {
         return;
       }
 
-      const qText = removeVietnameseTones(card.querySelector('.faq-question-text')?.textContent || '');
-      const aText = removeVietnameseTones(card.querySelector('.faq-answer-content')?.textContent || '');
+      const qText = removeVietnameseTones(card.querySelector('.faq-title-simple, .faq-question-text')?.textContent || '');
+      const aText = removeVietnameseTones(card.querySelector('.faq-answer-simple, .faq-answer-content')?.textContent || '');
       const stt = card.getAttribute('data-stt') || '';
 
       const textMatches = qText.includes(query) || aText.includes(query) || stt === query;
@@ -631,7 +626,7 @@ function initFaq() {
       if (textMatches) {
         card.style.display = 'block';
         card.classList.add('open');
-        const header = card.querySelector('.faq-card-header');
+        const header = card.querySelector('.faq-header-simple, .faq-card-header');
         if (header) header.setAttribute('aria-expanded', 'true');
         matchCount++;
       } else {
@@ -640,7 +635,7 @@ function initFaq() {
     });
 
     if (countStatus) {
-      countStatus.innerHTML = `Hiển thị <strong>${matchCount}</strong> / 28 câu hỏi`;
+      countStatus.innerHTML = `Hiển thị <strong>${matchCount}</strong> / 28 câu`;
     }
 
     if (noResults) {
