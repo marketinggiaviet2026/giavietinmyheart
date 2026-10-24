@@ -3616,12 +3616,13 @@ p {
 }
 
 .criteria-table td {
-  padding: 14px 18px;
+  padding: 14px 14px;
   font-size: 0.91rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
   color: #1e293b;
   line-height: 1.55;
+  overflow-wrap: break-word;
 }
 
 .criteria-table tr:last-child td {
@@ -3631,7 +3632,9 @@ p {
 .criteria-name {
   font-weight: 800;
   color: #0f274a;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: normal;
+  line-height: 1.45;
 }
 
 .criteria-weight {
@@ -3639,6 +3642,7 @@ p {
   font-weight: 800;
   white-space: nowrap;
   text-align: center;
+  font-size: 1rem;
 }
 
 .criteria-table-card.product .criteria-weight { color: #db2777; }
@@ -3675,7 +3679,7 @@ p {
   border-top: 2px solid #fecdd3;
   padding: 16px 18px;
   display: grid;
-  grid-template-columns: 30% 18% 52%;
+  grid-template-columns: 34% 14% 52%;
   align-items: center;
   min-height: 98px;
   box-sizing: border-box;
