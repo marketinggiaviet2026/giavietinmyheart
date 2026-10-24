@@ -5194,34 +5194,28 @@ p {
 }
 
 .faq-modern-table thead {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #f1f5f9;
   border-bottom: 2px solid #cbd5e1;
-  position: sticky;
-  top: 82px;
-  z-index: 10;
 }
 
 .faq-modern-table th {
-  padding: 16px 20px;
-  font-size: 0.86rem;
+  padding: 18px 22px;
+  font-size: 0.88rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: #0f274a;
+  background: #f1f5f9;
   white-space: nowrap;
 }
 
 .faq-modern-table th.th-stt {
   text-align: center;
-  width: 70px;
-}
-
-.faq-modern-table th.th-cat {
-  width: 175px;
+  width: 75px;
 }
 
 .faq-modern-table th.th-question {
-  width: 36%;
+  width: 40%;
 }
 
 .faq-modern-table th.th-answer {
@@ -5429,10 +5423,6 @@ p {
 
   .faq-table-action-btns {
     justify-content: space-between;
-  }
-
-  .faq-modern-table thead {
-    top: 72px;
   }
 }
 
