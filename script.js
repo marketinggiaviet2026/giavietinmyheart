@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModal();
   initBackToTop();
   initQuickActions();
+  initFaq();
 });
 
 /* ===================================================================
@@ -494,4 +495,176 @@ function initQuickActions() {
     });
   }
 }
+
+/* ===================================================================
+   10. FAQ / Q&A CARDS INTERACTION ("Giải đáp thắc mắc")
+   =================================================================== */
+function initFaq() {
+  const cards = document.querySelectorAll('.faq-card');
+  const toggleAllBtn = document.getElementById('faqToggleAllBtn');
+  const toggleAllText = document.getElementById('faqToggleAllText');
+  const searchInput = document.getElementById('faqSearchInput');
+  const searchClear = document.getElementById('faqSearchClear');
+  const filterPills = document.querySelectorAll('#faqFilterPills .faq-filter-pill');
+  const countStatus = document.getElementById('faqCountStatus');
+  const noResults = document.getElementById('faqNoResults');
+
+  if (!cards.length) return;
+
+  // Mở sẵn 2 câu đầu tiên để người dùng dễ khám phá
+  if (cards[0]) {
+    cards[0].classList.add('open');
+    const h0 = cards[0].querySelector('.faq-card-header');
+    if (h0) h0.setAttribute('aria-expanded', 'true');
+  }
+  if (cards[1]) {
+    cards[1].classList.add('open');
+    const h1 = cards[1].querySelector('.faq-card-header');
+    if (h1) h1.setAttribute('aria-expanded', 'true');
+  }
+
+  // Sự kiện bấm mở/đóng từng thẻ câu hỏi
+  cards.forEach(card => {
+    const header = card.querySelector('.faq-card-header');
+    if (!header) return;
+
+    header.addEventListener('click', () => {
+      const isOpen = card.classList.contains('open');
+      if (isOpen) {
+        card.classList.remove('open');
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        card.classList.add('open');
+        header.setAttribute('aria-expanded', 'true');
+      }
+      updateToggleAllBtnState();
+    });
+  });
+
+  function updateToggleAllBtnState() {
+    if (!toggleAllBtn || !toggleAllText) return;
+    const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none');
+    if (!visibleCards.length) return;
+    const allOpen = visibleCards.every(c => c.classList.contains('open'));
+    if (allOpen) {
+      toggleAllText.textContent = 'Thu gọn tất cả';
+      const icon = toggleAllBtn.querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-chevron-up';
+    } else {
+      toggleAllText.textContent = 'Mở tất cả câu hỏi';
+      const icon = toggleAllBtn.querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-chevron-down';
+    }
+  }
+
+  // Nút mở tất cả / thu gọn tất cả
+  if (toggleAllBtn) {
+    toggleAllBtn.addEventListener('click', () => {
+      const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none');
+      const allOpen = visibleCards.every(c => c.classList.contains('open'));
+      visibleCards.forEach(c => {
+        const header = c.querySelector('.faq-card-header');
+        if (allOpen) {
+          c.classList.remove('open');
+          if (header) header.setAttribute('aria-expanded', 'false');
+        } else {
+          c.classList.add('open');
+          if (header) header.setAttribute('aria-expanded', 'true');
+        }
+      });
+      updateToggleAllBtnState();
+    });
+  }
+
+  let activeCategory = 'all';
+
+  // Bộ lọc danh mục (Pills)
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeCategory = pill.getAttribute('data-filter') || 'all';
+      applyFilterAndSearch();
+    });
+  });
+
+  function removeVietnameseTones(str) {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase();
+  }
+
+  function applyFilterAndSearch() {
+    const rawQuery = searchInput ? searchInput.value.trim() : '';
+    const query = removeVietnameseTones(rawQuery);
+
+    if (searchClear) {
+      searchClear.style.display = rawQuery.length > 0 ? 'inline-flex' : 'none';
+    }
+
+    let matchCount = 0;
+
+    cards.forEach(card => {
+      const cardCategory = card.getAttribute('data-category');
+      const categoryMatches = activeCategory === 'all' || cardCategory === activeCategory;
+
+      if (!categoryMatches) {
+        card.style.display = 'none';
+        return;
+      }
+
+      if (!query) {
+        card.style.display = 'block';
+        matchCount++;
+        return;
+      }
+
+      const qText = removeVietnameseTones(card.querySelector('.faq-question-text')?.textContent || '');
+      const aText = removeVietnameseTones(card.querySelector('.faq-answer-content')?.textContent || '');
+      const stt = card.getAttribute('data-stt') || '';
+
+      const textMatches = qText.includes(query) || aText.includes(query) || stt === query;
+
+      if (textMatches) {
+        card.style.display = 'block';
+        card.classList.add('open');
+        const header = card.querySelector('.faq-card-header');
+        if (header) header.setAttribute('aria-expanded', 'true');
+        matchCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (countStatus) {
+      countStatus.innerHTML = `Hiển thị <strong>${matchCount}</strong> / 28 câu hỏi`;
+    }
+
+    if (noResults) {
+      noResults.style.display = matchCount === 0 ? 'block' : 'none';
+    }
+
+    updateToggleAllBtnState();
+  }
+
+  // Ô tìm kiếm câu hỏi
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilterAndSearch);
+  }
+
+  // Nút xóa tìm kiếm
+  if (searchClear) {
+    searchClear.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      applyFilterAndSearch();
+    });
+  }
+}
+
 
