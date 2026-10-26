@@ -36,40 +36,25 @@ function initCountdown() {
   const now = new Date();
   const targetYear = 2026;
 
-  // Milestone 1: Bắt đầu nộp sản phẩm dự thi (29/10/2026 00:00:00)
-  // (Month is 0-indexed: 9 = October, 10 = November)
+  // Thời gian nhận sản phẩm và video dự thi: 29/10/2026 đến 15/11/2026
   const submitStartDate = new Date(targetYear, 9, 29, 0, 0, 0);
-
-  // Milestone 2: Hạn cuối nhận sản phẩm & video (15/11/2026 23:59:59)
   const submitDeadline = new Date(targetYear, 10, 15, 23, 59, 59);
 
   let targetDate;
-  if (now < submitStartDate) {
-    // Đang đếm ngược đến ngày bắt đầu nộp bài (29/10/2026)
-    targetDate = submitStartDate;
-    if (titleEl) {
-      titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
-    }
-    if (pillEl) {
-      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Hạn chót nộp bài: 15/11';
-    }
-    if (subEl) {
-      subEl.innerHTML = 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 15/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 15/11/2026</strong>!';
-    }
-  } else if (now < submitDeadline) {
-    // Đang trong thời gian nộp bài, đếm ngược đến hạn chót nộp bài (15/11/2026 23:59:59)
+  if (now < submitDeadline) {
+    // Đếm ngược trong khoảng thời gian nhận sản phẩm dự thi (29/10 – 15/11)
     targetDate = submitDeadline;
     if (titleEl) {
       titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
     }
     if (pillEl) {
-      pillEl.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Hạn chót nộp bài: 23:59 ngày 15/11';
+      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Thời gian nhận bài: 29/10 – 15/11';
     }
     if (subEl) {
-      subEl.innerHTML = 'Cổng nhận sản phẩm dự thi đang mở! Hạn chót nộp bài lúc <strong>23:59 ngày 15/11/2026</strong>.';
+      subEl.innerHTML = 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 15/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 15/11/2026</strong>!';
     }
   } else {
-    // Đã kết thúc thời gian nộp bài
+    // Đã hết hạn nộp sản phẩm & video
     targetDate = now;
     if (titleEl) {
       titleEl.innerHTML = '<i class="fa-solid fa-flag-checkered countdown-title-icon"></i> ĐÃ HẾT HẠN NỘP SẢN PHẨM & VIDEO';
