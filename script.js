@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ===================================================================
    1. LIVE COUNTDOWN TIMER ("Thời gian nhận sản phẩm dự thi")
    - Bắt đầu nhận bài: 29/10/2026
-   - Hạn chót nộp sản phẩm & video: 23:59 ngày 15/11/2026
+   - Hạn chót nộp sản phẩm & video: 23:59 ngày 30/11/2026
    =================================================================== */
 function initCountdown() {
   const daysEl = document.getElementById('daysVal');
@@ -28,7 +28,7 @@ function initCountdown() {
   const minutesEl = document.getElementById('minutesVal');
   const secondsEl = document.getElementById('secondsVal');
   const titleEl = document.querySelector('.countdown-title');
-  const subEl = document.querySelector('.countdown-sub');
+  const subEl = document.querySelector('.countdown-sub, .ctn-text');
   const pillEl = document.querySelector('.countdown-date-pill');
 
   if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
@@ -36,22 +36,22 @@ function initCountdown() {
   const now = new Date();
   const targetYear = 2026;
 
-  // Thời gian nhận sản phẩm và video dự thi: 29/10/2026 đến 15/11/2026
+  // Thời gian nhận sản phẩm và video dự thi: 29/10/2026 đến 30/11/2026
   const submitStartDate = new Date(targetYear, 9, 29, 0, 0, 0);
-  const submitDeadline = new Date(targetYear, 10, 15, 23, 59, 59);
+  const submitDeadline = new Date(targetYear, 10, 30, 23, 59, 59);
 
   let targetDate;
   if (now < submitDeadline) {
-    // Đếm ngược trong khoảng thời gian nhận sản phẩm dự thi (29/10 – 15/11)
+    // Đếm ngược trong khoảng thời gian nhận sản phẩm dự thi (29/10 – 30/11)
     targetDate = submitDeadline;
     if (titleEl) {
       titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
     }
     if (pillEl) {
-      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Thời gian nhận bài: 29/10 – 15/11';
+      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Thời gian nhận bài: 29/10 – 30/11';
     }
     if (subEl) {
-      subEl.innerHTML = 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 15/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 15/11/2026</strong>!';
+      subEl.innerHTML = 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 30/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 30/11/2026</strong>!';
     }
   } else {
     // Đã hết hạn nộp sản phẩm & video
@@ -61,6 +61,9 @@ function initCountdown() {
     }
     if (pillEl) {
       pillEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Đã đóng cổng nhận bài';
+    }
+    if (subEl) {
+      subEl.innerHTML = 'Đã hết hạn nộp sản phẩm và video dự thi (23:59 ngày 30/11/2026). Cổng bình chọn sẽ đóng vào <strong>23:59 ngày 06/12/2026</strong>!';
     }
   }
 

@@ -1789,8 +1789,8 @@ p {
 .horizontal-timeline-line {
   position: absolute;
   top: 56px;
-  left: 8%;
-  right: 8%;
+  left: 12.5%;
+  right: 12.5%;
   height: 5px;
   background: linear-gradient(90deg, #2563eb 0%, #0284c7 35%, #ec4899 75%, #f43f5e 100%);
   border-radius: 4px;
@@ -1799,8 +1799,8 @@ p {
 
 .horizontal-timeline-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   position: relative;
   z-index: 2;
   align-items: stretch;
@@ -4078,12 +4078,12 @@ p {
   }
 
   .horizontal-timeline-line {
-    width: 1080px;
-    left: 40px;
+    width: 760px;
+    left: 120px;
   }
 
   .horizontal-timeline-grid {
-    width: 1080px;
+    width: 960px;
   }
 
   .footer-four-columns-grid {
