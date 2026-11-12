@@ -1910,8 +1910,8 @@ html[lang="en"] .subpage-main-desc {
 .horizontal-timeline-line {
   position: absolute;
   top: 56px;
-  left: 12.5%;
-  right: 12.5%;
+  left: 10%;
+  right: 10%;
   height: 5px;
   background: linear-gradient(90deg, #2563eb 0%, #0284c7 35%, #ec4899 75%, #f43f5e 100%);
   border-radius: 4px;
@@ -1920,8 +1920,8 @@ html[lang="en"] .subpage-main-desc {
 
 .horizontal-timeline-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
   position: relative;
   z-index: 2;
   align-items: stretch;
@@ -4199,12 +4199,12 @@ html[lang="en"] .subpage-main-desc {
   }
 
   .horizontal-timeline-line {
-    width: 760px;
-    left: 120px;
+    width: 880px;
+    left: 100px;
   }
 
   .horizontal-timeline-grid {
-    width: 960px;
+    width: 1080px;
   }
 
   .footer-four-columns-grid {
