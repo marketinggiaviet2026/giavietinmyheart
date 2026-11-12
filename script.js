@@ -15,7 +15,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initQuickActions();
   initFaq();
   initFaqTable();
+  initLanguagePreference();
 });
+
+function initLanguagePreference() {
+  document.querySelectorAll('.lang-btn, .top-lang-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const href = link.getAttribute('href') || '';
+      if (href.includes('-en') || href.includes('en.html')) {
+        localStorage.setItem('giaviet_lang', 'en');
+      } else {
+        localStorage.setItem('giaviet_lang', 'vi');
+      }
+    });
+  });
+}
 
 /* ===================================================================
    1. LIVE COUNTDOWN TIMER ("Thời gian nhận sản phẩm dự thi")
@@ -33,6 +47,7 @@ function initCountdown() {
 
   if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
+  const isEn = document.documentElement.lang === 'en';
   const now = new Date();
   const targetYear = 2026;
 
@@ -45,25 +60,37 @@ function initCountdown() {
     // Đếm ngược trong khoảng thời gian nhận sản phẩm dự thi (29/10 – 30/11)
     targetDate = submitDeadline;
     if (titleEl) {
-      titleEl.innerHTML = '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
+      titleEl.innerHTML = isEn
+        ? '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> SUBMISSION PERIOD COUNTDOWN'
+        : '<i class="fa-solid fa-stopwatch countdown-title-icon"></i> THỜI GIAN NHẬN SẢN PHẨM DỰ THI';
     }
     if (pillEl) {
-      pillEl.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Thời gian nhận bài: 29/10 – 30/11';
+      pillEl.innerHTML = isEn
+        ? '<i class="fa-regular fa-calendar-check"></i> Submission: Oct 29 – Nov 30'
+        : '<i class="fa-regular fa-calendar-check"></i> Thời gian nhận bài: 29/10 – 30/11';
     }
     if (subEl) {
-      subEl.innerHTML = 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 30/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 30/11/2026</strong>!';
+      subEl.innerHTML = isEn
+        ? 'Submission period for creative pieces and videos: <strong>Oct 29, 2026 – 23:59 Nov 30, 2026</strong>. Deadline: <strong>23:59 Nov 30, 2026</strong>!'
+        : 'Thời gian nhận sản phẩm và video: <strong>29/10/2026 – 23:59 ngày 30/11/2026</strong>. Hạn chót nộp bài: <strong>23:59 ngày 30/11/2026</strong>!';
     }
   } else {
     // Đã hết hạn nộp sản phẩm & video
     targetDate = now;
     if (titleEl) {
-      titleEl.innerHTML = '<i class="fa-solid fa-flag-checkered countdown-title-icon"></i> ĐÃ HẾT HẠN NỘP SẢN PHẨM & VIDEO';
+      titleEl.innerHTML = isEn
+        ? '<i class="fa-solid fa-flag-checkered countdown-title-icon"></i> SUBMISSION PERIOD CLOSED'
+        : '<i class="fa-solid fa-flag-checkered countdown-title-icon"></i> ĐÃ HẾT HẠN NỘP SẢN PHẨM & VIDEO';
     }
     if (pillEl) {
-      pillEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Đã đóng cổng nhận bài';
+      pillEl.innerHTML = isEn
+        ? '<i class="fa-solid fa-circle-check"></i> Submissions Closed'
+        : '<i class="fa-solid fa-circle-check"></i> Đã đóng cổng nhận bài';
     }
     if (subEl) {
-      subEl.innerHTML = 'Đã hết hạn nộp sản phẩm và video dự thi (23:59 ngày 30/11/2026). Cổng bình chọn sẽ đóng vào <strong>23:59 ngày 06/12/2026</strong>!';
+      subEl.innerHTML = isEn
+        ? 'Submission period has ended (23:59 Nov 30, 2026). Voting closes at <strong>23:59 Dec 06, 2026</strong>!'
+        : 'Đã hết hạn nộp sản phẩm và video dự thi (23:59 ngày 30/11/2026). Cổng bình chọn sẽ đóng vào <strong>23:59 ngày 06/12/2026</strong>!';
     }
   }
 
@@ -235,32 +262,43 @@ function initClassLookup() {
   }
 
   function handleCheck() {
+    const isEn = document.documentElement.lang === 'en';
     const val = input.value;
     const res = evaluateClass(val);
 
     if (!res) {
       resultBox.style.display = 'flex';
       resultBox.className = 'checker-result-box unknown';
-      resultBox.innerHTML = '<i class="fa-solid fa-circle-info"></i> Quý phụ huynh hoặc Thầy Cô hãy nhập tên lớp/khóa học hoặc chức danh (ví dụ: Family & Friends 2A, IELTS 5.5, Giáo viên...)';
+      resultBox.innerHTML = isEn
+        ? '<i class="fa-solid fa-circle-info"></i> Please enter your class name, course level or role (e.g., Family & Friends 2A, IELTS 5.5, Teacher, Staff...)'
+        : '<i class="fa-solid fa-circle-info"></i> Quý phụ huynh hoặc Thầy Cô hãy nhập tên lớp/khóa học hoặc chức danh (ví dụ: Family & Friends 2A, IELTS 5.5, Giáo viên...)';
       return;
     }
 
     resultBox.style.display = 'flex';
     if (res.board === 'Kids') {
       resultBox.className = 'checker-result-box kids';
-      resultBox.innerHTML = `<i class="fa-solid fa-child-reaching" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Kids nhé!</div>`;
+      resultBox.innerHTML = isEn
+        ? `<i class="fa-solid fa-child-reaching" style="font-size: 1.3rem;"></i> <div>Class <strong>${val}</strong> belongs to <strong>KIDS BOARD</strong> (Students from First Friends 1A to Family & Friends 4C). Please register for Kids Board!</div>`
+        : `<i class="fa-solid fa-child-reaching" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Kids nhé!</div>`;
     } else if (res.board === 'Teens') {
       resultBox.className = 'checker-result-box teens';
-      resultBox.innerHTML = `<i class="fa-solid fa-user-graduate" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Teens + ADU nhé!</div>`;
+      resultBox.innerHTML = isEn
+        ? `<i class="fa-solid fa-user-graduate" style="font-size: 1.3rem;"></i> <div>Class <strong>${val}</strong> belongs to <strong>TEENS + ADU BOARD</strong> (Students from EFT-Foundation 1 to IELTS classes). Please register for Teens + ADU Board!</div>`
+        : `<i class="fa-solid fa-user-graduate" style="font-size: 1.3rem;"></i> <div>Lớp/Khóa <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Hãy đăng ký bảng Teens + ADU nhé!</div>`;
     } else if (res.board === 'Staff') {
       resultBox.className = 'checker-result-box teens';
       resultBox.style.borderColor = '#c4b5fd';
       resultBox.style.background = '#f5f3ff';
       resultBox.style.color = '#6b21a8';
-      resultBox.innerHTML = `<i class="fa-solid fa-chalkboard-user" style="font-size: 1.3rem; color: #7c3aed;"></i> <div>Đội ngũ <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Chào mừng Thầy Cô & Anh Chị tham gia!</div>`;
+      resultBox.innerHTML = isEn
+        ? `<i class="fa-solid fa-chalkboard-user" style="font-size: 1.3rem; color: #7c3aed;"></i> <div>Team/Role <strong>${val}</strong> belongs to <strong>TEACHER & STAFF BOARD</strong> (Teachers, Staff and Teaching Assistants). Welcome to join!</div>`
+        : `<i class="fa-solid fa-chalkboard-user" style="font-size: 1.3rem; color: #7c3aed;"></i> <div>Đội ngũ <strong>${val}</strong> thuộc <strong>${res.name}</strong> (${res.note}). Chào mừng Thầy Cô & Anh Chị tham gia!</div>`;
     } else {
       resultBox.className = 'checker-result-box unknown';
-      resultBox.innerHTML = `<i class="fa-solid fa-circle-question" style="font-size: 1.3rem;"></i> <div>${res.note}</div>`;
+      resultBox.innerHTML = isEn
+        ? `<i class="fa-solid fa-circle-question" style="font-size: 1.3rem;"></i> <div>Please contact the support hotline 0292 383 1000 or front desk for exact category assignment!</div>`
+        : `<i class="fa-solid fa-circle-question" style="font-size: 1.3rem;"></i> <div>${res.note}</div>`;
     }
   }
 
@@ -565,6 +603,7 @@ function initFaq() {
   }
 
   let activeCategory = 'all';
+  const isEn = document.documentElement.lang === 'en';
 
   // Bộ lọc danh mục (Tabs)
   filterPills.forEach(pill => {
@@ -671,6 +710,7 @@ function initFaqTable() {
   const printBtn = document.getElementById('btnPrintFaqTable');
 
   let activeCategory = 'all';
+  const isEn = document.documentElement.lang === 'en';
 
   function removeVietnameseTones(str) {
     if (!str) return '';
@@ -720,7 +760,9 @@ function initFaqTable() {
     });
 
     if (statusBadge) {
-      statusBadge.innerHTML = `<i class="fa-solid fa-list-check"></i> Hiển thị: <strong>${visibleCount}</strong> / 28 câu`;
+      statusBadge.innerHTML = isEn
+        ? `<i class="fa-solid fa-list-check"></i> Showing: <strong>${visibleCount}</strong> / ${rows.length} questions`
+        : `<i class="fa-solid fa-list-check"></i> Hiển thị: <strong>${visibleCount}</strong> / ${rows.length} câu`;
     }
 
     if (emptyState) {
